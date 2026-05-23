@@ -1,4 +1,17 @@
+<p align="center">
+  <img src="assets/crucible_tensor_patch.svg" alt="CrucibleTensorPatch Logo" width="120px" />
+</p>
+
 # CrucibleTensorPatch
+
+<p align="center">
+  <a href="https://github.com/North-Shore-AI/crucible_tensor_patch/actions/workflows/ci.yml">
+    <img src="https://github.com/North-Shore-AI/crucible_tensor_patch/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI Status" />
+  </a>
+  <a href="https://github.com/North-Shore-AI/crucible_tensor_patch/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/North-Shore-AI/crucible_tensor_patch" alt="GitHub License" />
+  </a>
+</p>
 
 Deterministic tensor patch plans and patch application for model surgery.
 
