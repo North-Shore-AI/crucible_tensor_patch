@@ -2,7 +2,6 @@ defmodule CrucibleTensorPatch.MixProject do
   use Mix.Project
 
   @version "0.1.0"
-  @nx_ref "6424c8902380380cd7a8c282b0557d653aead018"
   @source_url "https://github.com/North-Shore-AI/crucible_tensor_patch"
 
   unless Code.ensure_loaded?(DependencySources) do
@@ -46,7 +45,7 @@ defmodule CrucibleTensorPatch.MixProject do
 
   defp deps do
     [
-      {:nx, github: "elixir-nx/nx", sparse: "nx", ref: @nx_ref, override: true},
+      {:nx, "~> 0.12", override: true},
       DependencySources.dep(:crucible_safetensors, __DIR__),
       DependencySources.dep(:crucible_factorization, __DIR__),
       {:jason, "~> 1.4"},
