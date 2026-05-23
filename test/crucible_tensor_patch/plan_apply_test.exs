@@ -24,6 +24,19 @@ defmodule CrucibleTensorPatch.PlanApplyTest do
     assert operation.expected_dtype == :f32
   end
 
+  test "Plan.load/1 normalizes supported dtype strings without dynamic atoms" do
+    assert {:ok, plan} =
+             Plan.load(%{
+               "operations" => [
+                 identity_op("copy", "layer.kernel", "copy.safetensors")
+                 |> Map.put("expected_dtype", "BF16")
+               ]
+             })
+
+    assert [operation] = plan.operations
+    assert operation.expected_dtype == :bf16
+  end
+
   test "Plan.load/1 rejects unknown operations" do
     assert {:error, %Errors{message: message}} =
              Plan.load(%{
@@ -66,6 +79,43 @@ defmodule CrucibleTensorPatch.PlanApplyTest do
             "source_path" => "layer.kernel",
             "output_path" => "svf.safetensors",
             "inputs" => %{"u" => "u", "s" => "s", "v" => "v", "scale_offsets" => "offsets"},
+            "expected_shape" => [2, 2],
+            "expected_dtype" => "f32"
+          }
+        ]
+      })
+
+    assert {:ok, manifest} =
+             Apply.apply(plan, source, dir,
+               components: %{
+                 "u" => decomp.u,
+                 "s" => decomp.s,
+                 "v" => decomp.v,
+                 "offsets" => offsets
+               }
+             )
+
+    assert [%{"status" => "complete"}] = manifest["operations"]
+  end
+
+  test "Apply.apply/4 accepts fixed atom input keys" do
+    dir = tmp_dir()
+    source = %{"layer.kernel" => Nx.tensor([[2.0, 4.0], [1.0, 2.0]], type: :f32)}
+
+    decomp =
+      CrucibleFactorization.SVD.decompose_tensor(source["layer.kernel"], compute_type: :f32)
+
+    offsets = Nx.broadcast(0.0, {Nx.axis_size(decomp.s, 0)})
+
+    {:ok, plan} =
+      Plan.load(%{
+        "operations" => [
+          %{
+            "id" => "svf",
+            "operation" => "svf_apply",
+            "source_path" => "layer.kernel",
+            "output_path" => "svf.safetensors",
+            "inputs" => %{u: "u", s: "s", v: "v", scale_offsets: "offsets"},
             "expected_shape" => [2, 2],
             "expected_dtype" => "f32"
           }

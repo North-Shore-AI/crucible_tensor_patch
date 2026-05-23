@@ -8,4 +8,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-05-23
 
 ### Added
-- Initial release of `CrucibleTensorPatch` under the TRINITY decomposition.
+- Initial release of `CrucibleTensorPatch` from the monolith extraction.

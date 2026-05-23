@@ -5,6 +5,13 @@ defmodule CrucibleTensorPatch.Apply do
   alias CrucibleSafetensors.{Checksum, Writer}
   alias CrucibleTensorPatch.{Errors, Manifest, Operation, ParamTree, Plan, TensorPath}
 
+  @input_atom_keys %{
+    "scale_offsets" => :scale_offsets,
+    "s" => :s,
+    "u" => :u,
+    "v" => :v
+  }
+
   @doc "Applies a plan to source tensors and writes output safetensors."
   @spec apply(Plan.t(), map(), Path.t(), keyword()) :: {:ok, map()} | {:error, Exception.t()}
   def apply(%Plan{} = plan, source_artifact, out_dir, opts \\ []) when is_map(source_artifact) do
@@ -116,12 +123,25 @@ defmodule CrucibleTensorPatch.Apply do
   end
 
   defp fetch_input!(inputs, components, name) do
-    value = Map.get(inputs, name) || Map.get(inputs, String.to_atom(name))
+    value = input_value(inputs, name)
 
     cond do
       match?(%Nx.Tensor{}, value) -> value
       is_binary(value) -> Map.fetch!(components, value)
       true -> raise Errors, "missing input #{inspect(name)}"
+    end
+  end
+
+  defp input_value(inputs, name) do
+    case Map.fetch(inputs, name) do
+      {:ok, value} ->
+        value
+
+      :error ->
+        case Map.fetch(@input_atom_keys, name) do
+          {:ok, atom_key} -> Map.get(inputs, atom_key)
+          :error -> nil
+        end
     end
   end
 

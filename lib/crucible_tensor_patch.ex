@@ -1,18 +1,5 @@
 defmodule CrucibleTensorPatch do
   @moduledoc """
-  Documentation for `CrucibleTensorPatch`.
+  Deterministic tensor patch plans and patch application for model surgery.
   """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> CrucibleTensorPatch.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
 end

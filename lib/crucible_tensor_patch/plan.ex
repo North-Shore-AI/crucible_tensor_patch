@@ -5,6 +5,13 @@ defmodule CrucibleTensorPatch.Plan do
 
   @operations [:identity, :svf_apply]
   @operation_strings %{"identity" => :identity, "svf_apply" => :svf_apply}
+  @dtype_strings %{
+    "bf16" => :bf16,
+    "f16" => :f16,
+    "f32" => :f32,
+    "i32" => :i32,
+    "i64" => :i64
+  }
   @field_atom_keys %{
     "checksum_policy" => :checksum_policy,
     "expected_dtype" => :expected_dtype,
@@ -98,8 +105,14 @@ defmodule CrucibleTensorPatch.Plan do
   defp normalize_dtype(nil), do: nil
   defp normalize_dtype(dtype) when is_atom(dtype), do: dtype
 
-  defp normalize_dtype(dtype) when is_binary(dtype),
-    do: dtype |> String.downcase() |> String.to_existing_atom()
+  defp normalize_dtype(dtype) when is_binary(dtype) do
+    normalized = String.downcase(dtype)
+
+    case Map.fetch(@dtype_strings, normalized) do
+      {:ok, atom} -> atom
+      :error -> raise Errors, "unsupported dtype #{inspect(dtype)}"
+    end
+  end
 
   defp normalize_checksum(nil), do: nil
   defp normalize_checksum(policy) when is_atom(policy), do: policy

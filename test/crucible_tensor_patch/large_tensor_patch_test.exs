@@ -5,11 +5,7 @@ defmodule CrucibleTensorPatch.LargeTensorPatchTest do
 
   @tag :large_tensor_patch
   test "fixture artifact manifest can seed a patch plan" do
-    artifact_dir =
-      System.get_env(
-        "TRINITY_ARTIFACT_DIR",
-        Path.expand("~/p/g/n/trinity_coordinator/priv/sakana_trinity/adapted_qwen3_0_6b_layer26")
-      )
+    artifact_dir = Path.expand("tmp/crucible_tensor_patch_fixture")
 
     manifest_path = Path.join(artifact_dir, "manifest.json")
     assert File.regular?(manifest_path)
