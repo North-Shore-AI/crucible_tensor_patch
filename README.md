@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/crucible_tensor_patch.svg" alt="CrucibleTensorPatch Logo" width="120px" />
+  <img src="assets/crucible_tensor_patch.svg" alt="CrucibleTensorPatch Logo" width="200px" />
 </p>
 
 # CrucibleTensorPatch
